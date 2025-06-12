@@ -11,7 +11,6 @@ const client = new OpenAI({
 const app = express();
 app.use(express.json());
 
-// Configuração do rate limiter (limite de 10 requisições por minuto)
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minuto
   max: 10,
@@ -54,7 +53,7 @@ async function getSentimentFromChatGpt(text) {
     }
 }
 
-// Aplicando rate limiter somente nessa rota
+
 app.post('/analyze-text', limiter, async (req, res) => {
     const { text } = req.body;
     if (!text) return res.status(400).json({ error: 'Texto não fornecido' });
