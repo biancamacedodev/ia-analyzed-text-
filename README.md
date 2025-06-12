@@ -1,58 +1,82 @@
-# API com integração de IA
-### Objetivo
-Criar uma API simples que:
-	1.	Analisa um texto de entrada.
-	2.	Retorna estatísticas básicas.
-	3.	Integra com uma API pública de IA para detectar sentimento.
+# Text Analyzed AI
 
-### Requisitos obrigatórios
-Crie um endpoint POST /analyze-text que receba um JSON com o seguinte formato:
+API Node.js para análise de texto, contagem de palavras, identificação das palavras mais frequentes e análise de sentimento usando a OpenAI.
+
+## Funcionalidades
+- Conta o número de palavras em um texto enviado.
+- Retorna as 5 palavras mais frequentes (ignorando stopwords).
+- Analisa o sentimento do texto (positivo, neutro ou negativo) usando a API da OpenAI.
+- Limita o número de requisições para evitar abuso (10 requisições por minuto).
+
+## Pré-requisitos
+- Node.js >= 14
+- Conta e chave de API da OpenAI
+
+## Instalação
+
+```bash
+npm install
 ```
+
+## Configuração
+Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
+
+```
+OPENAI_API_KEY=your_openai_api_key_aqui
+```
+
+Substitua `your_openai_api_key_aqui` pela sua chave da OpenAI.
+
+## Como rodar
+
+```bash
+node index.js
+```
+A API estará disponível em `http://localhost:3000`.
+
+## Rotas
+
+### `POST /analyze-text`
+Recebe um JSON com o campo `text` e retorna a análise.
+
+**Exemplo de requisição:**
+```json
 {
-  "text": "Seu texto livre aqui..."
+  "text": "Seu texto aqui para análise."
 }
 ```
-A resposta da API deve conter:
-- A contagem total de palavras.
-- As 5 palavras mais frequentes (ignorando stopwords, se possível).
-- Um resumo de sentimento do texto, utilizando alguma API pública de IA como:
-  - OpenAI (ex: `gpt-3.5-turbo` ou `gpt-4`)
-  - Claude (Anthropic)
-  - Hugging Face (ex: `distilbert-base-uncased-finetuned-sst-2-english`)
 
-### Opcional
-Adicionar um endpoint GET /search-term?term=... que retorne:
-- Se o termo informado foi encontrado na última análise.
-- Pode manter o histórico em cache/memória ou SQLite.
+**Resposta:**
+```json
+{
+  "wordCount": 5,
+  "topWords": [
+    { "word": "exemplo", "count": 2 },
+    ...
+  ],
+  "sentiment": "POSITIVO"
+}
+```
 
-### Tecnologias sugeridas
-- Linguagens: Node.js ou Python
-- Frameworks: Express, FastAPI, Django ou similar
-- Armazenamento: pode usar cache em memória, JSON local ou SQLite
-- Outras boas práticas:
-- Organização do código
-- Tratamento de erros
-- Uso de status codes HTTP adequados
-- Documentação simples (ex: Swagger ou README)
+### `GET /search-term?term=palavra`
+Verifica se uma palavra está presente no último texto analisado.
 
-## Readme do Repositório
+**Resposta:**
+```json
+{
+  "found": true,
+  "text": "Texto analisado anteriormente."
+}
+```
 
-- Deve conter o título do projeto
-- Uma descrição sobre o projeto em frase
-- Deve conter uma lista com linguagem, framework e/ou tecnologias usadas
-- Como instalar e usar o projeto (instruções)
-- Não esqueça o [.gitignore](https://www.toptal.com/developers/gitignore)
-- Se está usando github pessoal, referencie que é um challenge by coodesh:  
+## Limite de Requisições
+Cada IP pode fazer até 10 requisições por minuto. Após isso, será retornado um erro:
+```json
+{
+  "error": "Muitas requisições. Aguarde um minuto e tente novamente."
+}
+```
 
->  This is a challenge by [Coodesh](https://coodesh.com/)
+## Observações
+- O projeto não armazena textos analisados de forma persistente, apenas mantém o último texto em memória.
 
-## Finalização e Instruções para a Apresentação
-
-1. Adicione o link do repositório com a sua solução no teste
-2. Verifique se o Readme está bom e faça o commit final em seu repositório;
-3. Envie e aguarde as instruções para seguir. Caso o teste tenha apresentação de vídeo, dentro da tela de entrega será possível gravar após adicionar o link do repositório. Sucesso e boa sorte. =)
-
-
-## Suporte
-
-Para tirar dúvidas sobre o processo envie uma mensagem diretamente a um especialista no chat da plataforma. 
